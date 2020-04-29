@@ -33,7 +33,7 @@ app.get('/movie', (req, res) => {
   const { genre, country, avg_vote } = req.query;
 
   let newMovie = [...movies];
-  let genres = [...new Set(movies.map((m) => m.genre.toLowerCase()).sort())];
+  let genres = [...new Set(movies.map((m) => m.genre.toLowerCase()))];
   let countries = [];
   movies.forEach((m) => {
     m.country.split(',').forEach((c) => {
@@ -42,21 +42,24 @@ app.get('/movie', (req, res) => {
       }
     });
   });
-  countries.sort();
 
   if (genre && !genres.includes(genre.toLowerCase())) {
     return res.status(400).json({ error: 'needs to include valid genre' });
   }
 
   if (genre) {
-    newMovie = newMovie.filter((movie) => movie.genre.includes(genre));
+    newMovie = newMovie.filter((movie) =>
+      movie.genre.toLowerCase().includes(genre.toLowerCase())
+    );
   }
 
   if (country && !countries.includes(country.toLowerCase())) {
     return res.status(400).json({ error: 'needs to include valid country' });
   }
   if (country) {
-    newMovie = newMovie.filter((app) => app.country.includes(country));
+    newMovie = newMovie.filter((movie) =>
+      movie.country.toLowerCase().includes(country.toLowerCase())
+    );
   }
 
   if (Number(avg_vote) < 0 && Number(avg_vote) > 10) {
