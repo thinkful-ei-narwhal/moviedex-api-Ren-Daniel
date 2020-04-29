@@ -1,3 +1,4 @@
+'use strict';
 require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
@@ -33,33 +34,67 @@ app.get('/movie', (req, res) => {
 
   let newMovie = [...movies];
 
-
-  if (genre && !['action', 'drama', 'comedy', 'animation', 'thriller', 'crime', 'romantic', 'spy', 'adventure', 'documentary', 'horror', 'history', 'western', 'biography', 'musical', 'fantasy', 'war', 'grotesque'].includes(genre.toLowerCase())) {
+  if (
+    genre &&
+    ![
+      'action',
+      'drama',
+      'comedy',
+      'animation',
+      'thriller',
+      'crime',
+      'romantic',
+      'spy',
+      'adventure',
+      'documentary',
+      'horror',
+      'history',
+      'western',
+      'biography',
+      'musical',
+      'fantasy',
+      'war',
+      'grotesque',
+    ].includes(genre.toLowerCase())
+  ) {
     return res.status(400).json({ error: 'needs to include valid genre' });
   }
-
-  
 
   if (genre) {
     newMovie = newMovie.filter((movie) => movie.genre.includes(genre));
   }
-  
-  
-  if (country && !['united states', 'italy', 'great britain', 'japan', 'france', 'germany', 'spain', 'canada', 'china', 'hungary', 'israel'].includes(country.toLowerCase())) {
+
+  if (
+    country &&
+    ![
+      'united states',
+      'italy',
+      'great britain',
+      'japan',
+      'france',
+      'germany',
+      'spain',
+      'canada',
+      'china',
+      'hungary',
+      'israel',
+    ].includes(country.toLowerCase())
+  ) {
     return res.status(400).json({ error: 'needs to include valid country' });
   }
   if (country) {
     newMovie = newMovie.filter((app) => app.country.includes(country));
   }
 
-  if (Number(avg_vote) < 0 && Number(avg_vote) > 10){
+  if (Number(avg_vote) < 0 && Number(avg_vote) > 10) {
     return res.status(400).json({ error: 'needs to include valid genre' });
-  } 
-
-  if (avg_vote) {
-    newMovie = newMovie.filter(movie =>  Number(movie.avg_vote) >= Number(avg_vote));
   }
 
+  if (avg_vote) {
+    newMovie = newMovie.filter(
+      (movie) => Number(movie.avg_vote) >= Number(avg_vote)
+    );
+  }
 
   res.json(newMovie);
 });
