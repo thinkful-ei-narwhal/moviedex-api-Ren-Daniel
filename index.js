@@ -33,30 +33,18 @@ app.get('/movie', (req, res) => {
   const { genre, country, avg_vote } = req.query;
 
   let newMovie = [...movies];
+  let genres = [...new Set(movies.map((m) => m.genre.toLowerCase()).sort())];
+  let countries = [];
+  movies.forEach((m) => {
+    m.country.split(',').forEach((c) => {
+      if (!countries.includes(c.trim().toLowerCase())) {
+        countries.push(c.trim().toLowerCase());
+      }
+    });
+  });
+  countries.sort();
 
-  if (
-    genre &&
-    ![
-      'action',
-      'drama',
-      'comedy',
-      'animation',
-      'thriller',
-      'crime',
-      'romantic',
-      'spy',
-      'adventure',
-      'documentary',
-      'horror',
-      'history',
-      'western',
-      'biography',
-      'musical',
-      'fantasy',
-      'war',
-      'grotesque',
-    ].includes(genre.toLowerCase())
-  ) {
+  if (genre && !genres.includes(genre.toLowerCase())) {
     return res.status(400).json({ error: 'needs to include valid genre' });
   }
 
@@ -64,22 +52,7 @@ app.get('/movie', (req, res) => {
     newMovie = newMovie.filter((movie) => movie.genre.includes(genre));
   }
 
-  if (
-    country &&
-    ![
-      'united states',
-      'italy',
-      'great britain',
-      'japan',
-      'france',
-      'germany',
-      'spain',
-      'canada',
-      'china',
-      'hungary',
-      'israel',
-    ].includes(country.toLowerCase())
-  ) {
+  if (country && !countries.includes(country.toLowerCase())) {
     return res.status(400).json({ error: 'needs to include valid country' });
   }
   if (country) {
